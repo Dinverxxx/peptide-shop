@@ -10,8 +10,12 @@ const features = [
 ];
 
 const HeroBanner = () => (
-  <section className="bg-nav text-nav-foreground relative overflow-hidden">
-    <div className="container mx-auto px-4 py-16 md:py-24">
+  <section
+    className="text-nav-foreground relative overflow-hidden bg-cover bg-center bg-no-repeat"
+    style={{ backgroundImage: "url(/dashboard.jpg)" }}
+  >
+    <div className="absolute inset-0 z-0 bg-nav/80" aria-hidden />
+    <div className="container relative z-10 mx-auto px-4 py-16 md:py-24">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -36,7 +40,7 @@ const HeroBanner = () => (
     </div>
 
     {/* Feature strip */}
-    <div className="border-t border-nav-foreground/10 bg-nav-foreground/5">
+    <div className="relative z-10 border-t border-nav-foreground/10 bg-nav-foreground/5">
       <div className="container mx-auto px-4 py-5">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {features.map((f) => (
