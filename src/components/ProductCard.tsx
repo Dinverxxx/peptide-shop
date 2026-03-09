@@ -12,6 +12,8 @@ const badgeStyles = {
 
 const ProductCard = ({ product, index = 0 }: { product: Product; index?: number }) => {
   const { addItem } = useCart();
+  // Use image as-is; if it's from API it's /instances/filename - browser will encode when fetching
+  const imageSrc = product.image || "";
 
   return (
     <motion.div
@@ -23,9 +25,14 @@ const ProductCard = ({ product, index = 0 }: { product: Product; index?: number 
       {/* Image */}
       <div className="relative aspect-square bg-muted overflow-hidden">
         <img
-          src={product.image}
+          src={imageSrc || undefined}
           alt={product.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          onError={(e) => {
+            const el = e.target as HTMLImageElement;
+            el.onerror = null;
+            el.src = "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect fill="#e5e7eb" width="200" height="200"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-size="12">No image</text></svg>');
+          }}
         />
         {product.badge && (
           <Badge className={`absolute top-3 left-3 text-[10px] uppercase tracking-wider font-bold ${badgeStyles[product.badge]}`}>
@@ -37,14 +44,19 @@ const ProductCard = ({ product, index = 0 }: { product: Product; index?: number 
       {/* Info */}
       <div className="p-4">
         <p className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1">{product.category}</p>
-        <h3 className="font-semibold text-sm leading-tight mb-1 line-clamp-2">{product.name}</h3>
-        <p className="text-xs text-muted-foreground mb-3">{product.dosage} · {product.capsules} capsules</p>
+        <h3 className="font-semibold text-sm leading-tight mb-3 line-clamp-2">{product.name}</h3>
 
         <div className="flex items-center justify-between">
-          <div className="flex items-baseline gap-2">
-            <span className="font-display font-bold text-lg">${product.price.toFixed(2)}</span>
-            {product.originalPrice && (
-              <span className="text-xs text-muted-foreground line-through">${product.originalPrice.toFixed(2)}</span>
+          <div className="flex flex-col gap-0.5">
+            {product.priceHigh != null ? (
+              <span className="font-display font-bold text-lg">${product.price.toFixed(2)} – ${product.priceHigh.toFixed(2)}</span>
+            ) : (
+              <>
+                <span className="font-display font-bold text-lg">${product.price.toFixed(2)}</span>
+                {product.originalPrice != null && (
+                  <span className="text-xs text-muted-foreground line-through">${product.originalPrice.toFixed(2)}</span>
+                )}
+              </>
             )}
           </div>
           <button

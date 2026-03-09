@@ -2,9 +2,11 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { FlaskConical } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 const SignupPage = () => {
   const navigate = useNavigate();
+  const { signup } = useAuth();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", password: "", confirmPassword: "" });
 
@@ -15,20 +17,15 @@ const SignupPage = () => {
       return;
     }
     setLoading(true);
-
     try {
-      await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: form.name, email: form.email, password: form.password }),
-      });
-    } catch {}
-
-    setTimeout(() => {
-      setLoading(false);
+      await signup(form.name, form.email, form.password);
       toast.success("Account created successfully!");
       navigate("/");
-    }, 1000);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Signup failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

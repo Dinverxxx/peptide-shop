@@ -9,7 +9,7 @@ const Footer = () => (
           PeptideLab
         </div>
         <p className="text-xs text-center">
-          © 2025 PeptideLab. For research purposes only. Not for human consumption.
+          © 2026 PeptideLab. For research purposes only. Not for human consumption.
         </p>
       </div>
     </div>

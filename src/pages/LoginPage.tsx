@@ -1,30 +1,30 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { FlaskConical } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { apiUrl } from "@/lib/api";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
+  const from = (location.state as { from?: { pathname: string } })?.from?.pathname || "/";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
     try {
-      await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-    } catch {}
-
-    setTimeout(() => {
-      setLoading(false);
+      await login(form.email, form.password);
       toast.success("Logged in successfully!");
-      navigate("/");
-    }, 1000);
+      navigate(from, { replace: true });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Login failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

@@ -30,7 +30,7 @@ const CartPage = () => {
               <img src={item.product.image} alt={item.product.name} className="w-20 h-20 rounded-md object-cover" />
               <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-sm truncate">{item.product.name}</h3>
-                <p className="text-xs text-muted-foreground">{item.product.dosage} · {item.product.capsules} capsules</p>
+                {item.product.description && <p className="text-xs text-muted-foreground line-clamp-1">{item.product.description}</p>}
                 <div className="flex items-center gap-2 mt-3">
                   <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} className="p-1 rounded border hover:bg-muted">
                     <Minus className="h-3 w-3" />
